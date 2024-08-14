@@ -8,6 +8,7 @@ import { dbConnection } from "./config/db.js";
 import { userRouter } from "./routes/user_routes.js";
 import adminRouter from "./routes/Admin_route.js";
 import DoctorRouter from "./routes/Doctors_routes.js";
+import appointmentRouter from "./routes/appointment_router.js";
 
 
 const app = express();
@@ -40,6 +41,7 @@ dbConnection();
 app.use('/api',userRouter);
 app.use( '/api',  adminRouter);
 app.use( '/api' , DoctorRouter);
+app.use('/api' , appointmentRouter);
 
 expressOasGenerator.handleRequests();
 app.use((req,res) => res.redirect("/api-docs"));
