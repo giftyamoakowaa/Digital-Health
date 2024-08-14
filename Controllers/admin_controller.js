@@ -1,7 +1,7 @@
 import DoctorModel from "../models/Doctors_models.js";
 import { doctorSchema } from "../schema/doctor_Schema.js";
 import AdminModel from "../models/admin_models.js";
-import { adminSignupSchema } from "../schema/Admin_schema.js";
+import { adminSignupSchema } from "../schema/admin_schema.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
