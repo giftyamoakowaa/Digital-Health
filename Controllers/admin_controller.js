@@ -47,16 +47,23 @@ export const signIn = async (req, res) => {
   }
 };
 
-// Add Doctor Controller
-export const addDoctor = async (req, res) => {
-  try {
-    const { error } = doctorSchema.validate(req.body);
-    if (error) return res.status(400).send(error.details[0].message);
+// export const addDoctor = async (req, res) => {
+//   try {
+//     // Validate input data
+//     const { error } = doctorSchema.validate(req.body);
+//     if (error) return res.status(400).send(error.details[0].message);
 
-    const doctor = new DoctorModel(req.body);
-    await doctor.save();
-    res.status(201).send(doctor);
-  } catch (error) {
-    res.status(500).send(error.message);
-  }
-};
+//     // Save doctor details along with the photo path
+//     const doctorData = {
+//       ...req.body,
+//       photo: req.file ? req.file.path : null // Capture the image path from multer
+//     };
+
+//     const doctor = new DoctorModel(doctorData);
+//     await doctor.save();
+
+//     res.status(201).send(doctor);
+//   } catch (error) {
+//     res.status(500).send(error.message);
+//   }
+// };

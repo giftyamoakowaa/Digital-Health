@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken';
+import AdminModel from '../models/admin_models.js';
 
 export const checkUserSession = (req, res, next) => {
     if (req.session.user) {
@@ -20,35 +21,47 @@ export const checkUserSession = (req, res, next) => {
 };
 export default checkUserSession;
 
+export const adminAuth = async (req, res, next) => {
+  const token = req.header('Authorization');
+  if (!token) return res.status(401).send('Access denied. No token provided.');
 
-export const checkAdminSession = (req, res, next) => {
-    // Check if the admin session exists
-    if (req.session.admin) {
-        next();  // Admin is authenticated via session, proceed to the next middleware or route handler
-    } 
-    // If no session, check if the Authorization header is present
-    else if (req.headers.authorization) {
-        try {
-            // Extract the token from the Authorization header
-            const token = req.headers.authorization.split(' ')[1];
-            if (!token) return res.status(401).send('Access denied. No token provided.');
+  try {
+      // Verify the token
+      const decoded = jwt.verify(token, process.env.JWT_PRIVATE_KEY);
+      req.admin = decoded;
 
-            // Verify the token using your JWT secret
-            const decoded = jwt.verify(token, process.env.JWT_PRIVATE_KEY);
-            req.admin = decoded;  // Attach decoded admin data to the request object
+      // Retrieve user ID from token or session
+      const userId = req.session?.user?.id || req.admin?.id;
 
-            next();  // Proceed to the next middleware or route handler
-        } catch (error) {
-            // Handle token verification errors
-            console.error('Token verification error:', error.message);
-            return res.status(401).send('Invalid or expired token');
-        }
-    } 
-    // If neither session nor token is available, deny access
-    else {
-        res.status(401).send('Not authenticated');
-    }
+      // Find the user in the AdminModel
+      const user = await AdminModel.findById(userId);
+      if (!user) {
+          return res.status(404).send('User not found');
+      }
+
+      next();
+  } catch (error) {
+      res.status(400).send('Invalid token.');
+  }
 };
+
+
+// export const adminAuth = (req, res, next) => {
+//     const token = req.header('Authorization');
+//   if (!token) return res.status(401).send('Access denied. No token provided.');
+
+//   try {
+//     const decoded = jwt.verify(token, process.env.JWT_PRIVATE_KEY);
+//     req.admin = decoded;
+//     next();
+//   } catch (error) {
+//     res.status(400).send('Invalid token.');
+//   }
+// };
+
+
+
+  
 
 
 
