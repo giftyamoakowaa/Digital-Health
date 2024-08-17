@@ -20,8 +20,8 @@ export const loginValidator = Joi.object({
     password: Joi.string().required(),
 });
    
-export const updateUserValidator = Joi.object({
-    name: Joi.string(),
-    role: Joi.string().valid('admin'),
-});
+// export const updateUserValidator = Joi.object({
+//     name: Joi.string(),
+//     role: Joi.string().valid('admin'),
+// });
     

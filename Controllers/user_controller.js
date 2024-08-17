@@ -34,13 +34,15 @@ export const signup = async (req, res, next) => {
 // User Login
 export const login = async (req, res, next) => {
     try {
+        // Validate the input data
         const { error, value } = loginValidator.validate(req.body);
         if (error) {
-            return res.status(422).json(error);
+            return res.status(422).json({ error: error.details[0].message });
         }
 
         const { email, username, password } = value;
 
+        // Find the user by email or username
         const user = await userModel.findOne({
             $or: [
                 { email: email },
@@ -52,20 +54,23 @@ export const login = async (req, res, next) => {
             return res.status(401).json('No user found');
         }
 
+        // Compare the entered password with the stored hashed password
         const correctPassword = bcrypt.compareSync(password, user.password);
         if (!correctPassword) {
             return res.status(401).json('Invalid credentials');
         }
 
+        // Generate a JWT token
         const token = jwt.sign(
             { id: user._id },
             process.env.JWT_PRIVATE_KEY,
-            { expiresIn: '24h' },
+            { expiresIn: '24h' }
         );
 
+        // Respond with the token
         res.status(200).json({
             message: 'User logged in successfully',
-            accessToken: token
+            accessToken: token,
         });
     } catch (error) {
         next(error);
