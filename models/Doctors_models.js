@@ -8,18 +8,26 @@ const doctorSchema = new Schema({
   },
   specialty: {
     type: String,
-    required: true
+    // required: true
   },
   availability: {
     type: Boolean,
     default: false
   },
-  contactDetails: {
-    phone: String,
-    email: String
+  email: {
+    type: String,
+    required: true,
+    lowercase: true,
+  
   },
+  phone: {
+    type: String,
+  
+  },
+  photo: {
+    type: String // Path to the uploaded image
+  }
 });
 
-  
-  const DoctorModel = model('Doctor', doctorSchema);
-  export default DoctorModel;
+const DoctorModel = model('Doctor', doctorSchema);
+export default DoctorModel;
